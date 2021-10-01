@@ -1,6 +1,13 @@
 use std::convert::TryFrom;
-use sqlparser::ast::{Expr, Select, SetExpr, Statement};
+use sqlparser::ast::{
+    Select, SetExpr, Statement, 
+    Expr, 
+    Offset as SqlOffset,
+    Value as SqlValue,
+};
 use anyhow::anyhow;
+
+pub struct Offset<'a>(&'a SqlOffset);
 
 struct Sql<'a> {
     selection: Vec<Expr>,
@@ -11,7 +18,7 @@ struct Sql<'a> {
     limit: Option<usize>,
 }
 
-// Statemene -> Sql (use From/Into)
+/// sqlparser 解析出来的Statemene -> Sql (use From/Into)
 impl<'a> TryFrom<&'a Statement> for Sql<'a> {
     type Error = anyhow::Error;
 
@@ -32,6 +39,19 @@ impl<'a> TryFrom<&'a Statement> for Sql<'a> {
                 Ok(Sql {})
             },
             _ => Err(anyhow!("can not support")),
+        }
+    }
+}
+
+/// sqlparser 解析出来的 offset expr -> i64
+impl<'a> From<Offset<'a>> for i64 {
+    fn from(offset: Offset) -> Self {
+        match offset.0 {
+            SqlOffset {
+                value: Expr::Value(SqlValue::Number(v, _b)),
+                ..
+            } => v.parse().unwrap_or(0),
+            _ => 0,
         }
     }
 }
