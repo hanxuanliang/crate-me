@@ -4,6 +4,12 @@ use anyhow::{Result, anyhow};
 use mime::Mime;
 use reqwest::{Client, Url, Response, header};
 use std::{collections::HashMap, str::FromStr};
+use syntect::{
+    easy::HighlightLines, 
+    highlighting::ThemeSet, 
+    parsing::SyntaxSet, 
+    util::{LinesWithEndings, as_24_bit_terminal_escaped}
+};
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "httpcli")]
@@ -119,10 +125,24 @@ fn print_headers(resp: &Response) {
     println!("\n")
 }
 
+fn print_syntax(s: &str) {
+    let syntax_default = SyntaxSet::load_defaults_nonewlines();
+    let theme_default  = ThemeSet::load_defaults();
+    let syntax = syntax_default.find_syntax_by_extension("json").unwrap();
+    let mut height = HighlightLines::new(syntax, 
+        &theme_default.themes["base16-ocean.dark"]);
+    for line in LinesWithEndings::from(s) {
+        let ranges = height.highlight(line, &syntax_default);
+        let escaped = as_24_bit_terminal_escaped(&ranges[..], true);
+        print!("{}", escaped);
+    }
+}
+
 fn print_body(m: Option<Mime>, body: &str) {
     match m {
         Some(m) if m == mime::APPLICATION_JSON => {
-            println!("{}", jsonxf::pretty_print(body).unwrap().cyan());
+            // println!("{}", jsonxf::pretty_print(body).unwrap().cyan());
+            print_syntax(body)
         },
         _ => println!("{}", body),
     }
