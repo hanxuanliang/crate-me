@@ -1,3 +1,5 @@
+use regex::Regex;
+
 pub trait Parse {
     fn parse(s: &str) -> Self;
 }
@@ -15,7 +17,11 @@ impl Parse for u8 {
 
 #[test]
 fn parse_works() {
-    assert!(u8::parse("123dadad"), 123);
-    assert!(u8::parse("123.123adbd"), 123);
-    assert!(u8::parse("adnd"), 0);
+    assert_eq!(u8::parse("123dadad"), 123);
+    assert_eq!(u8::parse("123.123adbd"), 123);
+    assert_eq!(u8::parse("adnd"), 0);
+}
+
+fn main() {
+    println!("{}", u8::parse("123dadad"));
 }
