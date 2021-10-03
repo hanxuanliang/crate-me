@@ -19,29 +19,29 @@ struct Sql<'a> {
 }
 
 /// sqlparser 解析出来的Statemene -> Sql (use From/Into)
-// impl<'a> TryFrom<&'a Statement> for Sql<'a> {
-//     type Error = anyhow::Error;
+impl<'a> TryFrom<&'a Statement> for Sql<'a> {
+    type Error = anyhow::Error;
 
-//     fn try_from(sql: &'a Statement) -> Result<Self, Self::Error> {
-//         match sql {
-//             Statement::Query(query) => {
-//                 let Select {
-//                     from: table_with_joins,
-//                     selection: where_clause,
-//                     projection,
-//                     group_by,
-//                     ..
-//                 } = match &query.body {
-//                     SetExpr::Select(statement) => statement.as_ref(),
-//                     _ => return Err(anyhow!("cannot support ")),
-//                 };
+    fn try_from(sql: &'a Statement) -> Result<Self, Self::Error> {
+        match sql {
+            Statement::Query(query) => {
+                let Select {
+                    from: table_with_joins,
+                    selection: where_clause,
+                    projection,
+                    group_by,
+                    ..
+                } = match &query.body {
+                    SetExpr::Select(statement) => statement.as_ref(),
+                    _ => return Err(anyhow!("cannot support ")),
+                };
 
-//                 Ok(Sql {})
-//             },
-//             _ => Err(anyhow!("can not support")),
-//         }
-//     }
-// }
+                Ok(Sql {})
+            },
+            _ => Err(anyhow!("can not support")),
+        }
+    }
+}
 
 /// sqlparser 解析出来的 offset expr -> i64
 impl<'a> From<Offset<'a>> for i64 {
