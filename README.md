@@ -10,6 +10,10 @@ like [https://httpie.io/](https://httpie.io/)
 
 use SQL to query files or remote resources(http)
 
+## hkv
+
+[readme](./hkv/README.md)
+
 ## examples-play
 
 rust examples for play
