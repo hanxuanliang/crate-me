@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package qic;
+
+message CommandReq {
+    oneof request_data {
+        Hget hget = 1;
+        Hgetall hgetall = 2;
+        Hmget hmget = 3;
+    }
+}
+
+message CommandResp {
+    uint32 status = 1;
+    string message = 2;
+    repeated Value values = 3;
+    repeated Kvpair pairs = 4;
+}
+
+message Value {
+    oneof value {
+        string string = 1;
+        bytes binary  = 2;
+        int64 integer = 3;
+        double float = 4;
+        bool bool = 5;
+    }
+}
+
+message Kvpair {
+    string key = 1;
+    Value value = 2;
+}
+
+// get from table and one key, return one value
+message Hget {
+    string table = 1;
+    string key = 2;
+}
+
+// get from table, return all kvpairs
+message Hgetall {
+    string table = 1;
+}
+
+// get from table and more key, return more values
+message Hmget {
+    string table = 1;
+    repeated string keys = 2;
+}
