@@ -1,3 +1,4 @@
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommandReq {
     #[prost(oneof="command_req::RequestData", tags="1, 2, 3")]
@@ -5,6 +6,7 @@ pub struct CommandReq {
 }
 /// Nested message and enum types in `CommandReq`.
 pub mod command_req {
+    #[derive(PartialOrd)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum RequestData {
         #[prost(message, tag="1")]
@@ -15,6 +17,7 @@ pub mod command_req {
         Hmget(super::Hmget),
     }
 }
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommandResp {
     #[prost(uint32, tag="1")]
@@ -26,6 +29,7 @@ pub struct CommandResp {
     #[prost(message, repeated, tag="4")]
     pub pairs: ::prost::alloc::vec::Vec<Kvpair>,
 }
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Value {
     #[prost(oneof="value::Value", tags="1, 2, 3, 4, 5")]
@@ -33,12 +37,13 @@ pub struct Value {
 }
 /// Nested message and enum types in `Value`.
 pub mod value {
+    #[derive(PartialOrd)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Value {
         #[prost(string, tag="1")]
         String(::prost::alloc::string::String),
         #[prost(bytes, tag="2")]
-        Binary(::prost::alloc::vec::Vec<u8>),
+        Binary(::prost::bytes::Bytes),
         #[prost(int64, tag="3")]
         Integer(i64),
         #[prost(double, tag="4")]
@@ -47,6 +52,7 @@ pub mod value {
         Bool(bool),
     }
 }
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Kvpair {
     #[prost(string, tag="1")]
@@ -55,6 +61,7 @@ pub struct Kvpair {
     pub value: ::core::option::Option<Value>,
 }
 /// get from table and one key, return one value
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Hget {
     #[prost(string, tag="1")]
@@ -63,12 +70,14 @@ pub struct Hget {
     pub key: ::prost::alloc::string::String,
 }
 /// get from table, return all kvpairs
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Hgetall {
     #[prost(string, tag="1")]
     pub table: ::prost::alloc::string::String,
 }
 /// get from table and more key, return more values
+#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Hmget {
     #[prost(string, tag="1")]
