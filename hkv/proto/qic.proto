@@ -7,6 +7,7 @@ message CommandReq {
         Hget hget = 1;
         Hgetall hgetall = 2;
         Hmget hmget = 3;
+        Hset hset = 4;
     }
 }
 
@@ -47,4 +48,9 @@ message Hgetall {
 message Hmget {
     string table = 1;
     repeated string keys = 2;
+}
+
+message Hset {
+    string table = 1;
+    Kvpair kvpair = 2;
 }

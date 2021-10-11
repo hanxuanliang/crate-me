@@ -1,7 +1,7 @@
 #[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommandReq {
-    #[prost(oneof="command_req::RequestData", tags="1, 2, 3")]
+    #[prost(oneof="command_req::RequestData", tags="1, 2, 3, 4")]
     pub request_data: ::core::option::Option<command_req::RequestData>,
 }
 /// Nested message and enum types in `CommandReq`.
@@ -15,6 +15,8 @@ pub mod command_req {
         Hgetall(super::Hgetall),
         #[prost(message, tag="3")]
         Hmget(super::Hmget),
+        #[prost(message, tag="4")]
+        Hset(super::Hset),
     }
 }
 #[derive(PartialOrd)]
@@ -84,4 +86,12 @@ pub struct Hmget {
     pub table: ::prost::alloc::string::String,
     #[prost(string, repeated, tag="2")]
     pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Hset {
+    #[prost(string, tag="1")]
+    pub table: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub kvpair: ::core::option::Option<Kvpair>,
 }
