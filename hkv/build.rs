@@ -1,3 +1,4 @@
+// gen from: cargo build
 fn main() {
     prost_build::Config::new()
         .out_dir("src/pb")
