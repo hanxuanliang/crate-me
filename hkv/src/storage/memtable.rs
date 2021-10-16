@@ -31,6 +31,12 @@ impl Storage for Memtable {
 
     fn set(&self, table: &str, key: String, value: Value) -> Result<Option<Value>, crate::KvError> {
         let table = self.get_or_create_table(table);
+
+
+        let s = String::from("dadsad");
+        let s1 = &s;
+        let s2 = s.as_str();
+        let s3 = &s[..];
         Ok(table.insert(key, value))
     }
 }
