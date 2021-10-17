@@ -8,3 +8,5 @@ edition = "2018"
 [dependencies]
 regex = "1.5.4"
 gjson = "0.8"
+anyhow = "1.0.38"
+thiserror = "1.0.23"
