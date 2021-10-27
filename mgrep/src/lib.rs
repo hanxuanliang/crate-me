@@ -1,10 +1,16 @@
-use std::{fs::File, io, io::{BufReader, Write, Read, Stdout}, ops::Range, path::Path, ptr::read};
+use std::{
+    fs::File, 
+    io::{self, BufRead}, 
+    io::{BufReader, Write, Read, Stdout}, 
+    ops::Range, path::Path
+};
 use anyhow::Result;
 use clap::Parser;
 
 mod errors;
 use colored::Colorize;
 pub use errors::GrepError;
+use itertools::Itertools;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use regex::Regex;
 
@@ -44,7 +50,18 @@ impl GrepConfig {
 
 fn defaule_strategy<W: Write, R: Read>(
     path: &Path, reader: BufReader<R>, pattern: &Regex, writer: &mut W) -> Result<(), GrepError> {
-    reader.
+    let matches = reader.lines().enumerate().map(|(lineno, line)| {
+        line.ok().map(|line| {
+            pattern.find(&line).map(|m| format_line(&line, lineno+1, m.range()))
+        }).flatten()
+    }).filter_map(|v| v.ok_or(()).ok()).join("\n");
+
+    if !matches.is_empty() {
+        writer.write_all(path.display().to_string().green().as_bytes())?;
+        writer.write_all(b"\n")?;
+        writer.write_all(matches.as_bytes())?;
+        writer.write_all(b"\n")?;
+    }
     
     Ok(())
 }
