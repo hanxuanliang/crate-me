@@ -1,30 +1,33 @@
 use sqlparser::dialect::Dialect;
 
 #[derive(Debug, Default)]
-pub struct TryDialect;
+pub struct TyrDialect;
 
-impl Dialect for TryDialect {
-    fn is_identifier_start(&self, c: char) -> bool {
-        ('a'..='z').contains(&c) 
-            || ('A'..='Z').contains(&c) 
-            || c == '_'
+// 创建自己的 sql 方言。TyrDialect 支持 identifier 可以是简单的 url
+impl Dialect for TyrDialect {
+    fn is_identifier_start(&self, ch: char) -> bool {
+        ('a'..='z').contains(&ch) || ('A'..='Z').contains(&ch) || ch == '_'
     }
-    // identifier contains ':', '/', '?', '&', '='
-    fn is_identifier_part(&self, c: char) -> bool {
-        ('a'..='z').contains(&c)
-            || ('A'..='Z').contains(&c)
-            || ('0'..='9').contains(&c)
-            || [':', '/', '?', '&', '=', '+', '#', '.', '-', '_', '%'].contains(&c)
+
+    // identifier 可以有 ':', '/', '?', '&', '='
+    fn is_identifier_part(&self, ch: char) -> bool {
+        ('a'..='z').contains(&ch)
+            || ('A'..='Z').contains(&ch)
+            || ('0'..='9').contains(&ch)
+            || [':', '/', '?', '&', '=', '-', '_', '.'].contains(&ch)
     }
 }
 
-#[allow(dead_code)]
+/// 测试辅助函数
 pub fn example_sql() -> String {
     let url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/latest/owid-covid-latest.csv";
+
     let sql = format!(
-        "SELECT * FROM {}",
+        "SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
+        FROM {} where new_deaths >= 500 ORDER BY new_cases DESC LIMIT 6 OFFSET 5",
         url
     );
+
     sql
 }
 
@@ -32,9 +35,9 @@ pub fn example_sql() -> String {
 mod tests {
     use super::*;
     use sqlparser::parser::Parser;
-    
+
     #[test]
     fn it_works() {
-        assert!(Parser::parse_sql(&TryDialect::default(), &example_sql()).is_ok());
+        assert!(Parser::parse_sql(&TyrDialect::default(), &example_sql()).is_ok());
     }
 }
